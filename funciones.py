@@ -410,3 +410,4 @@ def eliminar_producción(id_producción):
         lista_producción.remove(producción_encontrada)
         return True
     return False
+    
