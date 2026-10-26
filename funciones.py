@@ -107,7 +107,7 @@ def registrar_vaca(id_vaca , id_finca, nombre_vaca,raza,peso,):
     lista_vacas.append(vaca)
 
 def listar_vacas():
-    return vaca
+    return lista_vacas
 
 def buscar_vaca(id_vaca):
     for vaca in lista_vacas:
@@ -115,14 +115,17 @@ def buscar_vaca(id_vaca):
             return vaca
         return None
 
-def actualizar_vaca(id_vaca, id_finca, nombre_vaca, raza, peso, color ):
+def actualizar_vaca(id_vaca, id_usuario, id_finca, nombre_vaca, raza, peso, color ):
      vaca = buscar_vaca(id_vaca)
 
      if vaca :
+         vaca.id_vaca=id_vaca,
+         vaca.id_usuario=id_usuario,
+         vaca.id_finca=id_finca,
          vaca.nombre=nombre_vaca,
          vaca.raza=raza,
          vaca.peso=peso,
-         vaca.id_finca=id_finca,
+         
          vaca.color=color
          return True
      return False
@@ -287,6 +290,9 @@ def actualiza_detalle(id_detalle, id_vaca, cantidad, precio):
 
         return True
     return False
+def listar_detalle_de_venta():
+    return lista_detalle_de_venta
+
 
 def eliminar_detalle(id_detalle):
     detalle_encontrado=buscar_detalle_de_venta(id_detalle)

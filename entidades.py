@@ -3,6 +3,7 @@ from dataclasses import dataclass
 @dataclass
 class vaca:
     id_vaca:int
+    id_usuario: int
     id_finca:int
     nombre_vaca: str
     raza: str
