@@ -1,20 +1,68 @@
 import flet as ft
-from funciones import listar_alimentación, buscar_usuario
+from funciones import listar_alimentación, buscar_vacas
 
 
 def vista_alimentación(page: ft.Page):
     alimentaciones= listar_alimentación()
 
 
+    tabla_general= ft.DataTable(
+        columns=[
+            ft.DataColumn(ft.Text("ID de alinmentación")),
+            ft.DataColumn(ft.Text("Tipos de Alimentos")),
+            ft.DataColumn(ft.Text("Descripción")),
+            ft.DataColumn(ft.Text("Cantidad (Libras)")),
+            ft.DataColumn(ft.Text("Fecha")),
+            ft.DataColumn(ft.Text("Costo Del Alimento")),
+        ],
+        rows=[
+            ft.DataRow(
+                cells=[
+                    ft.DataCell(ft.Text(alimento.id_alimentacion)),
+                    ft.DataCell(ft.Text(alimento.tipo_de_alimento)),
+                    ft.DataCell(ft.Text(alimento.descripción)),
+                    ft.DataCell(ft.Text(alimento.cantidad)),
+                    ft.DataCell(ft.Text(alimento.fecha)),
+                    ft.DataCell(ft.Text(alimento.costo_alimento))
+                ]
+            ) for alimento in alimentaciones if alimento.id_vaca is None
+        ]
+    )
     seccion_general = ft.Column([
-        ft.Text ("Alimentación General", 
-                 size=18, 
-                 weight=ft.FontWeight.BOLD),
-                 
-    ])
-    tabla_general= ft.DataTable(ft.Text(""))
+            ft.Text ("Alimentación General", 
+                    size=18, 
+                    weight=ft.FontWeight.BOLD),
+                    tabla_general,
+        ])
 
-
+    
+    tabla_individual= ft.DataTable(
+        columns=[
+            ft.DataColumn(ft.Text("ID de alinmentación")),
+                        ft.DataColumn(ft.Text("Tipos de Alimentos")),
+                        ft.DataColumn(ft.Text("Descripción")),
+                        ft.DataColumn(ft.Text("Cantidad (Libras)")),
+                        ft.DataColumn(ft.Text("Fecha")),
+                        ft.DataColumn(ft.Text("Costo Del Alimento")),
+                        ft.DataColumn(ft.Text("Nombre de la vaca"))
+                    ],
+                    rows=[
+                        ft.DataRow(
+                            cells=[
+                                ft.DataCell(ft.Text(alimento.id_alimentacion)),
+                                ft.DataCell(ft.Text(alimento.tipo_de_alimento)),
+                                ft.DataCell(ft.Text(alimento.descripción)),
+                                ft.DataCell(ft.Text(alimento.cantidad)),
+                                ft.DataCell(ft.Text(alimento.fecha)),
+                                ft.DataCell(ft.Text(alimento.costo_alimento)),
+                                ft.DataCell(ft.Text(buscar_vacas(alimento.id_vaca).nombre
+                                                    if buscar_vacas(alimento.id_vaca)else "Desconocido"))
+                            ]
+                        ) for alimento in alimentaciones if alimento.id_vaca is not None
+                    ]
+                )
+            
+    
     seccion_individual = ft.Column([
         ft.Text("Alimentación Individual", 
                 size=18, 

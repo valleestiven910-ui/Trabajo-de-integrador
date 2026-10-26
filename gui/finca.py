@@ -1,6 +1,6 @@
 import flet as ft
 
-from funciones import listar_fincas
+from funciones import listar_fincas, buscar_usuario
 
 
 def mostrar_fincas(page: ft.Page):
@@ -9,8 +9,8 @@ def mostrar_fincas(page: ft.Page):
 
     tabla = ft.DataTable(
         columns=[
-            ft.DataColumn(ft.Text("ID Finca")),
-            ft.DataColumn(ft.Text("ID Usuario")),
+            ft.DataColumn(ft.Text("ID de la Finca")),
+            ft.DataColumn(ft.Text("Dueño de finca")),
             ft.DataColumn(ft.Text("Departamento")),
             ft.DataColumn(ft.Text("Ubicación")),
             ft.DataColumn(ft.Text("Nombre de la finca"))
@@ -19,7 +19,8 @@ def mostrar_fincas(page: ft.Page):
             ft.DataRow(
                 cells=[
                     ft.DataCell(ft.Text(finca.id_finca)),
-                    ft.DataCell(ft.Text(finca.id_usuario)),
+                    ft.DataCell(ft.Text(buscar_usuario(finca.id_usuario).nombre
+                                        if buscar_usuario(finca.id_usuario) else "Desconocido")),
                     ft.DataCell(ft.Text(finca.departamento)),
                     ft.DataCell(ft.Text(finca.ubicación)),
                     ft.DataCell(ft.Text(finca.nombre_finca))

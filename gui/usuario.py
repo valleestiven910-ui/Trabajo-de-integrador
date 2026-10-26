@@ -19,7 +19,7 @@ def mostrar_usuarios(page: ft.page):
         row=[
             ft.DataRow(
              cells=[
-                     ft.DataCell(ft.Text(usuario.ID_usuario)),
+                     ft.DataCell(ft.Text(usuario.id_usuario)),
                      ft.DataCell(ft.Text(usuario.Nombres)),
                      ft.DataCell(ft.Tex(usuario.apellidos)),
                      ft.DataCell(ft.Text(usuario.cedula)),

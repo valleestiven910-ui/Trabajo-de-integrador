@@ -35,8 +35,8 @@ class medicamento:
     id_vaca: int
     remedio: str
     fecha: str
-    peso_anterior_del_ganado : float
-    peso_actual_del_ganado : float
+    peso_anterior_de_la_vaca : float
+    peso_actual_de_la_vaca: float
     dosis_por_vacas: str
 
 @dataclass
@@ -74,5 +74,18 @@ class detalle_de_venta:
 class alimentación:
     id_alimentacion: int
     tipo_de_alimento: str
+    descripción: str
     cantidad: float
     fecha: str
+    costo_alimento: float
+    id_vaca: int | None
+
+
+@dataclass
+class catalogo:
+    id_vaca: int
+    nombre: str
+    imagen: str
+    peso: float
+    preció: float
+    en_catalogo: bool= False

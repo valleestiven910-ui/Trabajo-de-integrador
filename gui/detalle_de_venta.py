@@ -12,6 +12,7 @@ def vista_detalle_de_venta(page: ft. Page):
     #Declaración de los campos de textos 
     txt_id_vaca= ft.TextField(label="ID vaca", read_only=True)
     txt_id_usuario=ft.TextField(label="ID Usuario", read_only=True)
+    txt_id_finca= ft.TextField(label= "ID Vaca", read_only=True)
     txt_nombre_vaca= ft.TextField(label="Nombre Vaca", read_only=True)
     txt_raza = ft.TextField(label="Raza", read_only=True)
     txt_color = ft.TextField(label="Color", read_only=True)
@@ -33,6 +34,7 @@ def vista_detalle_de_venta(page: ft. Page):
         if vaca:
             txt_id_vaca.value = str(vaca.id_vaca)
             txt_id_usuario.value = str(vaca.id_usuario) 
+            txt_id_finca.value = str(vaca.id_finca)
             txt_nombre_vaca.value = str(vaca.nombre_vaca)
             txt_raza.value = str(vaca.raza)
             txt_color.value = str(vaca.color)
@@ -49,6 +51,7 @@ def vista_detalle_de_venta(page: ft. Page):
                 dropdown_vacas,
                 txt_id_vaca,
                 txt_id_usuario,
+                txt_id_finca,
                 txt_nombre_vaca,
                 txt_raza,
                 txt_color,

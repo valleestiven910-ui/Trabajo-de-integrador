@@ -1,4 +1,4 @@
-from entidades import vaca, usuario, finca, medicamento, costo, producción, factura
+from entidades import vaca, usuario, finca, medicamento, costo, producción, factura, alimentación
 from Datos import lista_vacas, lista_finca, lista_usuario, lista_medicamento, lista_costo, lista_producción, lista_factura, lista_detalle_de_venta, lista_alimentación
 #===========
 #Registrar un usuario
@@ -95,7 +95,7 @@ def eliminar_finca(id_finca):
 def registrar_vaca(id_vaca , id_finca, nombre_vaca,raza,peso,):
 
     id_vaca = len(lista_vacas) + 1
-    vaca= vaca(
+    vacas = vaca(
         id=int(id_vaca),
        id_finca=(id_finca),
         nombre=nombre_vaca,
@@ -310,7 +310,7 @@ def eliminar_detalle(id_detalle):
 #===========
 #registro de medicamento
 #==============
-def registrar_medicamento(id_medicamento, id_vaca, remedio, fecha, peso_anterior_del_ganado, peso_actual_del_ganado, dosis_por_vacas):
+def registrar_medicamento(id_medicamento, id_vaca, remedio, fecha, peso_anterior_de_la_vaca, peso_actual_de_la_vaca, dosis_por_vacas):
     id_medicamento = len(lista_medicamento) + 1
     
     nuevo_medicamento = medicamento(
@@ -318,8 +318,8 @@ def registrar_medicamento(id_medicamento, id_vaca, remedio, fecha, peso_anterior
            id_vaca= int(id_vaca), 
            remedio = remedio,
            fecha = fecha,
-           peso_anterior_del_ganado = float(peso_anterior_del_ganado),
-           peso_actual_del_ganado = float(peso_actual_del_ganado),
+           peso_anterior_del_ganado = float(peso_anterior_de_la_vaca),
+           peso_actual_del_ganado = float(peso_actual_de_la_vaca),
            dosis_por_vacas = float (dosis_por_vacas)
        )
 
@@ -327,7 +327,7 @@ def registrar_medicamento(id_medicamento, id_vaca, remedio, fecha, peso_anterior
     return nuevo_medicamento
 
 def listar_medicamento():
-    return medicamento
+    return lista_medicamento
 
 def buscar_medicamento(id_medicamento):
     for nuevo_medicamento in lista_medicamento:
@@ -336,7 +336,7 @@ def buscar_medicamento(id_medicamento):
         return None
 
     
-def actualizar_medicamento(id_medicamento, id_vaca, remedio, fecha, peso_anterior_del_ganado, peso_actual_del_ganado, dosis_por_vacas):
+def actualizar_medicamento(id_medicamento, id_vaca, remedio, fecha, peso_anterior_de_la_vaca, peso_actual_de_la_vaca, dosis_por_vacas):
         medicamento= buscar_medicamento(id_medicamento)
 
 
@@ -345,8 +345,8 @@ def actualizar_medicamento(id_medicamento, id_vaca, remedio, fecha, peso_anterio
             medicamento.id_vaca = id_vaca,
             medicamento.remedio = remedio,
             medicamento.fecha = fecha,
-            medicamento.peso_anterior_del_ganado = peso_anterior_del_ganado,
-            medicamento.peso_actual_del_ganado = peso_actual_del_ganado,
+            medicamento.peso_anterior_del_ganado = peso_anterior_de_la_vaca,
+            medicamento.peso_actual_del_ganado = peso_actual_de_la_vaca,
             medicamento.dosis_por_vacas = dosis_por_vacas
 
             return True
@@ -375,7 +375,7 @@ def registrar_producción(id_producción, id_vaca, cantidad, Litros, fecha):
         id_vaca = int(id_vaca),
         cantidad = int(cantidad),
         Litros = float (Litros),
-        fecha = fecha
+        fecha = float(fecha)
     )
 
 
@@ -383,7 +383,7 @@ def registrar_producción(id_producción, id_vaca, cantidad, Litros, fecha):
     return nueva_producción
 
 def listar_producciones():
-    return producción
+    return lista_producción
 
 def buscar_producción(id_producción):
     for nueva_producción in lista_producción:
@@ -414,6 +414,75 @@ def eliminar_producción(id_producción):
 
     if producción_encontrada:
         lista_producción.remove(producción_encontrada)
+        return True
+    return False
+
+
+
+def registrar_alimentación(id_alimentación, tipo_de_alimento, descripción, cantidad, fecha, costo_alimento, id_vaca=None):
+
+    id_alimentación = len(lista_alimentación) +1
+
+    nueva_alimentación = alimentación (
+        id_alimentación=int(id_alimentación),
+        tipo_de_alimento=tipo_de_alimento,
+        descripción=descripción,
+        cantidad= float(cantidad),
+        fecha=float(fecha),
+        costo_alimento=float(costo_alimento),
+        id_vaca=int(id_vaca) if id_vaca else None
+    )
+
+
+    lista_producción.append (nueva_alimentación)
+    return nueva_alimentación
+
+
+def listar_alimentación():
+    return lista_alimentación
+
+
+def buscar_alimentación(id_alimentación):
+    for nueva_alimentación in lista_producción:
+
+        if nueva_alimentación.id_alimentación==id_alimentación:
+            return nueva_alimentación
+
+def actualizar_alimentación(id_alimentación, tipo_de_alimento, descripción, cantidad, fecha, costo_alimento):
+    nueva_alimentación= buscar_alimentación(id_alimentación)
+
+
+    if nueva_alimentación:
+        alimentación.id_alimentación=id_alimentación,
+        alimentación.tipo_de_alimento=tipo_de_alimento,
+        alimentación.descripción=descripción,
+        alimentación.cantidad=cantidad,
+        alimentación.fecha=fecha,
+        alimentación.costo_alimento=costo_alimento
+        return True
+    return False
+
+
+def eliminar_alimentación(id_alimentación):
+    alimentación_encontrada= buscar_alimentación(id_alimentación)
+
+    if alimentación_encontrada:
+        lista_alimentación.remove(alimentación_encontrada)
+        return True
+    return False
+
+def listar_vacas_en_catalogo():
+    todas_las_vacas = lista_vacas
+
+    vacas_seleccionadas = [v for v in todas_las_vacas if v.en_catalogo==True]
+
+    return vacas_seleccionadas
+
+def actualizar_estado_y_foto_catalogo(id_vaca, en_catalogo, imagen):
+    vaca_encontrada = buscar_vaca(id_vaca)
+    if vaca_encontrada: 
+        vaca_encontrada.en_catalogo = en_catalogo
+        vaca_encontrada.imagen =imagen
         return True
     return False
     
