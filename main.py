@@ -1,106 +1,74 @@
-from funciones import registrar_vaca, obtener_inventario, buscar_por_id, obtener_historial, registrar_finca, obtener_fincas, registrar_vendedor, obtener_vendedores, registrar_remedio, obtener_remedios, registrar_comprador, obtener_compradores
+import flet as ft
+
+from gui.Login import mostrar_login
+from gui.usuario import mostrar_usuarios
+from gui.finca import mostrar_fincas
+from gui.vacas import mostrar_vacas
+from gui.medicamento import mostrar_medicamento
+from gui.producción import mostrar_producciones
+from gui.alimentación import vista_alimentación
+from gui.catalogo import mostrar_catalogo
+from gui.splash_screen import VIDEO_PATH, mostrar_splash
+
+def main(page: ft.Page):
+    page.title = "Sistema de Gestión Ganadera"
+    page.window_width = 1100
+    page.window_height = 700
+    page.window_resizable = True
+    page.theme_mode = ft.ThemeMode.LIGHT
+
+    def mostrar_sistema(usuario_actual):
+        page.controls.clear()
+        contenido = ft.Container(expand=True, padding=20)
+        vistas = [
+            ("Usuarios", mostrar_usuarios),
+            ("Fincas", mostrar_fincas),
+            ("Vacas", mostrar_vacas),
+            ("Medicamentos", mostrar_medicamento),
+            ("Producción", mostrar_producciones),
+            ("Alimentación", vista_alimentación),
+            ("Catálogo", mostrar_catalogo),
+        ]
+
+        def cargar_vista(vista):
+            control = vista(page)
+            if isinstance(control, ft.View):
+                control = ft.Column(controls=control.controls, expand=True)
+            contenido.content = control
+            page.update()
+
+        menu = ft.Column(
+            controls=[
+                ft.Text("GAVAD", size=24, weight=ft.FontWeight.BOLD),
+                ft.Text(f"Hola, {usuario_actual.nombres}"),
+                *[
+                    ft.ElevatedButton(
+                        nombre,
+                        width=170,
+                        on_click=lambda e, vista=vista: cargar_vista(vista),
+                    )
+                    for nombre, vista in vistas
+                ],
+                ft.TextButton(
+                    "Cerrar sesión",
+                    on_click=lambda e: mostrar_login(page, mostrar_sistema),
+                ),
+            ],
+            width=190,
+            spacing=10,
+        )
+
+        page.add(
+            ft.Row(
+                controls=[menu, ft.VerticalDivider(width=1), contenido],
+                expand=True,
+                vertical_alignment=ft.CrossAxisAlignment.STRETCH,
+            )
+        )
+        cargar_vista(mostrar_usuarios)
+
+    mostrar_splash(page, lambda: mostrar_login(page, mostrar_sistema))
 
 
-def mostrar_lista(titulo, elementos):
-    print(f"\n--- {titulo} ---")
-    if not elementos:
-        print("No hay registros.")
-        return
-    for elemento in elementos:
-        print(elemento)
-
-
-def registrar_vaca_menu():
-    try:
-        datos = [input("ID de arete: ").strip(), input("Nombre: ").strip(),
-                 input("Raza: ").strip(), input("Cédula del dueño: ").strip(),
-                 input("Color: ").strip(), float(input("Peso (kg): ").strip()),
-                 input("Departamento: ").strip()]
-        textos_obligatorios = datos[:5] + [datos[6]]
-        if not all(textos_obligatorios):
-            print("Los datos de texto son obligatorios.")
-        elif datos[5] < 0:
-            print("El peso no puede ser negativo.")
-        elif registrar_vaca(*datos):
-            print("Vaca registrada correctamente.")
-        else:
-            print("Ya existe una vaca con ese ID.")
-    except ValueError:
-        print("Los valores numéricos no son válidos.")
-
-
-def registrar_finca_menu():
-    try:
-        datos = [input("Nombres del propietario: "), input("Apellidos: "),
-                 input("Cédula: "), input("Celular: "), input("Nombre de la finca: "),
-                 input("Nombre descriptivo: "), input("ID de finca: ")]
-        print("Finca registrada correctamente." if registrar_finca(*datos)
-              else "Ya existe una finca con ese ID.")
-    except ValueError:
-        print("Los valores numéricos no son válidos.")
-
-
-def registrar_vendedor_menu():
-    try:
-        datos = [input("Nombre: "), input("Apellidos: "), input("Cédula: "),
-                 input("Celular: "), input("ID de finca: "), input("ID de vaca: "),
-                 input("Peso: "), input("Antecedentes: "),
-                 input("¿Comprada? (s/n): ").lower() == "s",
-                 input("¿Criollo? (s/n): ").lower() == "s", input("Ubicación: "),
-                 input("Departamento: "), input("Precio de venta: ")]
-        print("Vendedor registrado correctamente." if registrar_vendedor(*datos)
-              else "Ya existe un vendedor con esa cédula.")
-    except ValueError:
-        print("Los valores numéricos no son válidos.")
-
-
-def registrar_remedio_menu():
-    try:
-        datos = [input("Nombre: "), input("Descripción: "), input("Precio: "), input("Cantidad: ")]
-        print("Remedio registrado correctamente." if registrar_remedio(*datos)
-              else "Ya existe un remedio con ese ID.")
-    except ValueError:
-        print("Los valores numéricos no son válidos.")
-
-
-def registrar_comprador_menu():
-    try:
-        datos = [input("Nombre: "), input("Apellidos: "), input("Cédula: "),
-                 input("Celular: "), input("Departamento: "), input("Presupuesto: ")]
-        print("Comprador registrado correctamente." if registrar_comprador(*datos)
-              else "Ya existe un comprador con esa cédula.")
-    except ValueError:
-        print("Los valores numéricos no son válidos.")
-
-
-while True:
-    print("\n===== SISTEMA DE LA APLICACIÓN DE LA EMPRESA BOXRUS=====")
-    print("1. Registrar vaca    2. Listar vacas    3. Buscar vaca")
-    print("4. Historial vacas   5. Registrar finca 6. Listar fincas")
-    print("7. Registrar vendedor 8. Listar vendedores")
-    print("9. Registrar remedio 10. Listar remedios")
-    print("11. Registrar comprador 12. Listar compradores")
-    print("0. Salir")
-    opcion = input("\nSeleccione una opción: ").strip()
-    try:
-        if opcion == "1": registrar_vaca_menu()
-        elif opcion == "2": mostrar_lista("Vacas", obtener_inventario())
-        elif opcion == "3":
-            encontrado = buscar_por_id(input("ID de arete: "))
-            print(encontrado if encontrado else "Vaca no encontrada.")
-        elif opcion == "4": mostrar_lista("Historial", obtener_historial())
-        elif opcion == "5": registrar_finca_menu()
-        elif opcion == "6": mostrar_lista("Fincas", obtener_fincas())
-        elif opcion == "7": registrar_vendedor_menu()
-        elif opcion == "8": mostrar_lista("Vendedores", obtener_vendedores())
-        elif opcion == "9": registrar_remedio_menu()
-        elif opcion == "10": mostrar_lista("Remedios", obtener_remedios())
-        elif opcion == "11": registrar_comprador_menu()
-        elif opcion == "12": mostrar_lista("Compradores", obtener_compradores())
-        elif opcion == "0":
-            print("Programa finalizado.")
-            break
-        else: print("Seleccione una opción válida.")
-    except ValueError:
-        print("El dato numérico no es válido.")
-
+if __name__ == "__main__":
+    ft.run(main, assets_dir=str(VIDEO_PATH.parent))

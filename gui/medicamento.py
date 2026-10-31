@@ -1,8 +1,8 @@
 import flet as ft
 
-from funciones import listar_medicamento, buscar_vacas, buscar_finca
+from funciones import listar_medicamento, buscar_vaca
 
-def mostrar_vacas(page:ft.Page):
+def mostrar_medicamento(page:ft.Page):
 
     medicamentos = listar_medicamento()
 
@@ -17,20 +17,18 @@ def mostrar_vacas(page:ft.Page):
             ft.DataColumn(ft.Text("Fecha")),
             ft.DataColumn(ft.Text("Peso_Anterior_Del_Ganado")),
             ft.DataColumn(ft.Text("Peso_Actual_Del_Ganado")),
-            ft.DataColumn(ft.Text("finca")),
         ],        
         rows =[
             ft.DataRow(
                 cells=[
                     ft.DataCell(ft.Text(medicamento.id_medicamento)),
-                    ft.DataCell(ft.Text(buscar_vacas(medicamento.id_vaca).nombre
-                                        if buscar_vacas(medicamento.id_vaca) else "Desconocido")),
+                    ft.DataCell(ft.Text(buscar_vaca(medicamento.id_vaca).nombre_vaca
+                                        if buscar_vaca(medicamento.id_vaca) else "Desconocido")),
                     ft.DataCell(ft.Text(medicamento.remedio)),
                     ft.DataCell(ft.Text(medicamento.dosis_por_vacas)),
+                    ft.DataCell(ft.Text(medicamento.fecha)),
                     ft.DataCell(ft.Text(medicamento.peso_anterior_de_la_vaca)),
-                    ft.DataCell(ft.Text(medicamento.peso_actual_de_la_vaca)),
-                    ft.DataCell(ft.Text(buscar_finca(medicamento.id_finca).nombre
-                                        if buscar_finca(medicamento.id_finca) else "Desconocido"))
+                    ft.DataCell(ft.Text(medicamento.peso_actual_de_la_vaca))
 
 
                 ]

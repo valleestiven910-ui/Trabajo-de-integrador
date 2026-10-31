@@ -20,7 +20,7 @@ def mostrar_producciones(page: ft.Page):
             ft.DataRow(
                 cells=[
                     ft.DataCell(ft.Text(produccion.id_producción)),
-                    ft.DataCell(ft.Text(buscar_vaca(produccion.id_vaca).nombre
+                    ft.DataCell(ft.Text(buscar_vaca(produccion.id_vaca).nombre_vaca
                                         if buscar_vaca(produccion.id_vaca) else "Desconocido")),
                     ft.DataCell(ft.Text(produccion.cantidad)),
                     ft.DataCell(ft.Text(produccion.Litros)),
@@ -30,7 +30,7 @@ def mostrar_producciones(page: ft.Page):
         ]
     )
 
-    return ft.column(
+    return ft.Column(
         controls=[
             ft.Text(
                 "Producción",

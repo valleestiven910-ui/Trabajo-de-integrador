@@ -1,6 +1,44 @@
 import flet as ft
 
-from funciones import listar_vacas
+from funciones import listar_costos, listar_vacas
+from gui.factura import mostrar_comprobante
+
+
+def mostrar_detalle_vaca(vaca, page: ft.Page):
+    def comprar(e):
+        dialogo.open = False
+        page.update()
+        costos = [costo for costo in listar_costos() if costo.id_vaca == vaca.id_vaca]
+        mostrar_comprobante(vaca, costos, page)
+
+    dialogo = ft.AlertDialog(
+        title=ft.Text(f"Detalle de vaca: {vaca.nombre_vaca}"),
+        content=ft.Column(
+            [
+                ft.Image(src=vaca.imagen, width=220, height=150, fit=ft.ImageFit.COVER),
+                ft.Text(f"ID: {vaca.id_vaca}"),
+                ft.Text(f"Dueño (ID): {vaca.id_usuario}"),
+                ft.Text(f"Finca (ID): {vaca.id_finca}"),
+                ft.Text(f"Nombre: {vaca.nombre_vaca}"),
+                ft.Text(f"Raza: {vaca.raza}"),
+                ft.Text(f"Color: {vaca.color}"),
+                ft.Text(f"Peso: {vaca.peso} kg"),
+            ],
+            tight=True,
+        ),
+        actions=[
+            ft.ElevatedButton("Comprar", on_click=comprar),
+            ft.TextButton("Cerrar", on_click=lambda e: cerrar(dialogo, page)),
+        ],
+    )
+    page.dialog = dialogo
+    dialogo.open = True
+    page.update()
+
+
+def cerrar(dialogo, page):
+    dialogo.open = False
+    page.update()
 
 
 def vista_detalle_de_venta(page: ft. Page):

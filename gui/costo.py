@@ -1,60 +1,102 @@
 import flet as ft
-from funciones import listar_vacas_en_catalogo, listar_vaca, listar_costo
+
+from funciones import listar_costos, registrar_costo_vaca
+from gui.detalle_de_venta import mostrar_detalle_vaca
 
 
+def mostrar_costos_vaca(vaca, page: ft.Page):
+    costos = [costo for costo in listar_costos() if costo.id_vaca == vaca.id_vaca]
+    filas = [
+        ft.DataRow(
+            cells=[
+                ft.DataCell(ft.Text(costo.descripcion)),
+                ft.DataCell(ft.Text(costo.fecha)),
+                ft.DataCell(ft.Text(f"C$ {costo.precio:.2f}")),
+            ]
+        )
+        for costo in costos
+    ]
 
-def ver_costo_vaca(vaca, page: ft.Page):
-
-    todos_los_costos = listar_costo() if 'listar_costos' in globals() else []
-    costo_vaca= [c for c in todos_los_costos if c.id_vaca ==vaca.id_vaca]
-
-
-    detalles_elementos = []
-    total_precio = 0
-
-    if not costo_vaca:
-        detalles_elementos.append(ft.Text("No hay registros de costos para esta vaca.", italic=True))
-    else:
-        for c in costo_vaca:
-            total_precio += c.precio
-            detalles_elementos.append(
-                ft.Container(
-                    content= ft.Column([
-                        ft.Text(f"ID Vaca: {c.id_vaca}", weight=ft.FontWeight.BOLD),
-                        ft.Text(f"Descripcióm: {c.descripción}"),
-                        ft.Text(f"Fecha:{c.fecha}"),
-                        ft.Text(f"Precio: ${c.precio:.2f}", color=ft.colors.GREEN, weight=ft.FontWeight.BOLD),
-
-
-                    ]),
-                    padding=10,
-                    border=ft.border.all(1, ft.colors.OUTLINE_VARIANT),
-                    border_radius=ft.border_radius.all(8),
-                    margin= ft.margin.only(bottom=10)
-                )
+    if not filas:
+        filas.append(
+            ft.DataRow(
+                cells=[
+                    ft.DataCell(ft.Text("Sin costos registrados")),
+                    ft.DataCell(ft.Text("-")),
+                    ft.DataCell(ft.Text("C$ 0.00")),
+                ]
             )
-    def realizar_compra(e):
-        page.sanck_bar = ft.SnackBar(ft.Text(f"¡Has iniciado el proceso de compra para {vaca.nombre_vaca}!"))
-        page.snack_bar.open=True
-        dlg_costo.open=False
+        )
+
+    def agregar_costo(e):
+        descripcion = ft.TextField(label="Descripción del costo")
+        fecha = ft.TextField(label="Fecha (YYYY-MM-DD)")
+        precio = ft.TextField(label="Precio (C$)", keyboard_type=ft.KeyboardType.NUMBER)
+
+        def guardar(ev):
+            try:
+                registrar_costo_vaca(
+                    vaca.id_vaca,
+                    descripcion.value or "",
+                    fecha.value or "",
+                    precio.value or "",
+                )
+            except ValueError as error:
+                page.snack_bar = ft.SnackBar(ft.Text(str(error)))
+                page.snack_bar.open = True
+                page.update()
+                return
+
+            formulario.open = False
+            page.update()
+            mostrar_costos_vaca(vaca, page)
+
+        formulario = ft.AlertDialog(
+            title=ft.Text("Agregar costo"),
+            content=ft.Column([descripcion, fecha, precio], tight=True),
+            actions=[
+                ft.ElevatedButton("Guardar", on_click=guardar),
+                ft.TextButton("Cancelar", on_click=lambda ev: cerrar(formulario, page)),
+            ],
+        )
+        page.dialog = formulario
+        formulario.open = True
         page.update()
 
+    def abrir_detalle(e):
+        dialogo.open = False
+        page.update()
+        mostrar_detalle_vaca(vaca, page)
 
-    dlg_costos =ft.AlertDialog(
-        title=ft.Text(f"Detalles de Costos: {vaca.nombre_vaca}"),
-        content=ft.Column([
-            ft.Image(src=vaca.imagen, width=100, height=100, fit=ft.ImageFit.COVER),
-            ft.Divider(),
-            ft.Text("Historial de Inversión y Precios:", weight=ft.FontWeight.BOLD)
-            ft.Column(detalles_elementos, scroll=ft.ScrollMode.AUTO, height=180)
-        ], tight=True, width=350),
+    dialogo = ft.AlertDialog(
+        title=ft.Text(f"Costos de {vaca.nombre_vaca}"),
+        content=ft.Column(
+            [
+                ft.Image(src=vaca.imagen, width=180, height=120, fit=ft.ImageFit.COVER),
+                ft.Text(f"Raza: {vaca.raza} | Peso: {vaca.peso} kg"),
+                ft.DataTable(
+                    columns=[
+                        ft.DataColumn(ft.Text("Concepto")),
+                        ft.DataColumn(ft.Text("Fecha")),
+                        ft.DataColumn(ft.Text("Precio")),
+                    ],
+                    rows=filas,
+                ),
+            ],
+            tight=True,
+            scroll=ft.ScrollMode.AUTO,
+        ),
         actions=[
-            ft.ElevatedButton("Comprar Vaca", icon=ft.icons.SHOPPING_CART, bgcolor = ft.color.GREEN, color=ft.colors.WHITE, 
-                              on_click=realizar_compra),
-            ft.TextButton("Cerrar", on_click=lambda e: (setattr(dlg_costos, 'open', False), page.update()))                  
-        ]
+            ft.TextButton("Nuevo costo", on_click=agregar_costo),
+            ft.ElevatedButton("Detalle de vaca", on_click=abrir_detalle),
+            ft.TextButton("Cerrar", on_click=lambda e: cerrar(dialogo, page)),
+        ],
     )
-    page.dialog = dlg_costos
-    dlg_costos.open = True
+    page.dialog = dialogo
+    dialogo.open = True
     page.update()
 
+
+def cerrar(dialogo, page):
+    dialogo.open = False
+    page.update()

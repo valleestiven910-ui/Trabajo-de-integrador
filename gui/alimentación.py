@@ -1,5 +1,5 @@
 import flet as ft
-from funciones import listar_alimentación, buscar_vacas
+from funciones import listar_alimentación, buscar_vaca
 
 
 def vista_alimentación(page: ft.Page):
@@ -55,8 +55,8 @@ def vista_alimentación(page: ft.Page):
                                 ft.DataCell(ft.Text(alimento.cantidad)),
                                 ft.DataCell(ft.Text(alimento.fecha)),
                                 ft.DataCell(ft.Text(alimento.costo_alimento)),
-                                ft.DataCell(ft.Text(buscar_vacas(alimento.id_vaca).nombre
-                                                    if buscar_vacas(alimento.id_vaca)else "Desconocido"))
+                                ft.DataCell(ft.Text(buscar_vaca(alimento.id_vaca).nombre_vaca
+                                                        if buscar_vaca(alimento.id_vaca)else "Desconocido"))
                             ]
                         ) for alimento in alimentaciones if alimento.id_vaca is not None
                     ]
@@ -66,7 +66,7 @@ def vista_alimentación(page: ft.Page):
     seccion_individual = ft.Column([
         ft.Text("Alimentación Individual", 
                 size=18, 
-                weight=ft.FontWeight),
+                weight=ft.FontWeight.BOLD),
                 tabla_individual,
     ], visible= False)
 
@@ -89,7 +89,7 @@ def vista_alimentación(page: ft.Page):
         on_change=cambiar_vista
     )
 
-    return ft.view(
+    return ft.View(
         "/alimentación",
         [
             ft.Column(
